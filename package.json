@@ -1,0 +1,22 @@
+{
+  "name": "generator-create-WebRoll-app",
+  "version": "1.0.0",
+  "description": "A yeoman generator to create a webpack or rollup based front-end project.",
+  "main": "generators/app/index.js",
+  "repository": "https://github.com/cclintris/generator-create-WebRoll-app.git",
+  "keywords": [
+    "yeoman-generator"
+  ],
+  "author": "cclintris <181250083@smail.nju.edu.cn>",
+  "license": "MIT",
+  "dependencies": {
+    "beeper": "^3.0.0",
+    "boxen": "^6.2.1",
+    "chalk": "^5.0.0",
+    "download-git-repo": "^3.0.2",
+    "fs-extra": "^10.0.0",
+    "ora": "^6.0.1",
+    "update-notifier": "^5.1.0",
+    "yeoman-generator": "^5.4.2"
+  }
+}
