@@ -67,6 +67,19 @@ class WebRollGenerator extends Generator {
 
     return checkResult
   }
+
+  /**
+   * print environment information(Node env)
+   * @return void
+   */
+  _printEnvInfo() {
+    const { env, version, platform, cwd } = process
+    this.log(chalk.grey('Environment Information:'))
+    this.log(chalk.grey(`Node env\t${env}`))
+    this.log(chalk.grey(`Node version\t${version}`))
+    this.log(chalk.grey(`OS\t${platform}`))
+    this.log(chalk.grey(`Program running directory\t${cwd()}`))
+  }
 }
 
 module.exports = WebRollGenerator
