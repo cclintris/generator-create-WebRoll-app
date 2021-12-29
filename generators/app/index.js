@@ -80,6 +80,36 @@ class WebRollGenerator extends Generator {
     this.log(chalk.grey(`OS\t${platform}`))
     this.log(chalk.grey(`Program running directory\t${cwd()}`))
   }
+
+  initialize() {
+    this.log()
+
+    const version = `v${pkg.version}`
+    const messages = []
+    messages.push(
+      `💁 Welcome to Generator-Create-WebRoll CLI ${chalk.grey(version)}~  `
+    )
+    messages.push(
+      chalk.yellow(
+        'You can create a Webpack/Rollup-based frontend environment app.'
+      )
+    )
+    messages.push(
+      chalk.grey('https://github.com/cclintris/generator-create-WebRoll-app')
+    )
+    // npm package url
+    // messages.push()
+    this.log(
+      boxen(messages.join('\n'), {
+        ...BOXEN_OPTS,
+        borderColor: 'green',
+        borderStyle: 'doubleSingle',
+      })
+    )
+
+    this._printEnvInfo()
+    this._checkVersion()
+  }
 }
 
 module.exports = WebRollGenerator
