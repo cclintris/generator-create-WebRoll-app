@@ -14,6 +14,10 @@ class WebRollGenerator extends Generator {
     this.type = APP_TYPE.WEBPACK
 
     this._getDefaultDir = this._getDefaultDir.bind(this)
+    this._checkVersion = this._checkVersion.bind(this)
+    this._printEnvInfo = this._printEnvInfo.bind(this)
+    this._askForAppType = this._askForAppType.bind(this)
+    this._askForDir = this._askForDir.bind(this)
   }
 
   _getDefaultDir() {
@@ -110,6 +114,56 @@ class WebRollGenerator extends Generator {
     this._printEnvInfo()
     this._checkVersion()
   }
+
+  /** ------------------ prompting options for CLI users --------------------- */
+
+  async _askForAppType() {
+    const questions = [
+      {
+        type: 'list',
+        name: 'type',
+        choices: [
+          {
+            name: 'webpack (app based on webpack, webpack-cli)',
+            value: APP_TYPE.WEBPACK,
+          },
+          {
+            name: 'webpack (app based on rollup, rollup-cli)',
+            value: APP_TYPE.ROLLUP,
+          },
+        ],
+        messages: 'Please choose the build tool for your project：',
+        default: APP_TYPE.WEBPACK,
+      },
+    ]
+
+    const { type } = await this.prompt(questions)
+    this.type = type
+    this.dirName = this._getDefaultDir()
+  }
+
+  async _askForDir() {
+    const questions = [
+      {
+        type: 'input',
+        name: 'dirName',
+        message: 'Please enter the directory name for your project：',
+        default: this.dirName,
+        validate: (dirName) => {
+          if (dirName.length < 1) {
+            beeper()
+            return '⚠️  directory name must not be null！'
+          }
+          return true
+        },
+      },
+    ]
+
+    const { dirName } = await this.prompt(questions)
+    this.dirName = dirName
+  }
+
+  async _askForOverwrite() {}
 }
 
 module.exports = WebRollGenerator
