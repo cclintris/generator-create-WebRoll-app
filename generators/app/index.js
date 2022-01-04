@@ -3,8 +3,10 @@ const updateNotifier = require('update-notifier')
 const chalk = require('chalk')
 const boxen = require('boxen')
 const beeper = require('beeper')
+const fs = require('fs-extra')
+const path = require('path')
 
-const { APP_TYPE, BOXEN_OPTS } = require('./constant')
+const { APP_TYPE, BOXEN_OPTS, DEFAULT_DIR } = require('./constant')
 const pkg = require('./package')
 
 class WebRollGenerator extends Generator {
@@ -163,7 +165,28 @@ class WebRollGenerator extends Generator {
     this.dirName = dirName
   }
 
-  async _askForOverwrite() {}
+  async _askForOverwrite() {
+    const destination = this.destinationPath()
+    const dirName = this.dirName
+    if (!fs.existsSync(path.resolve(destination, dirName))) {
+      return Promise.resolve()
+    }
+
+    const warn = chalk.grey('CAUTION: Files may be overwritten!')
+    const question = [
+      {
+        type: 'confirm',
+        name: 'overwrite',
+        message: `⚠️  Directory ${dirName} exists. Do you want to continue using it? ${warn}`,
+        default: false,
+      },
+    ]
+
+    const { overwrite } = await this.prompt(question)
+    if (!overwrite) {
+      this.dirName = DEFAULT_DIR
+    }
+  }
 }
 
 module.exports = WebRollGenerator

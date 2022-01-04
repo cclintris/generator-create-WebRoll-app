@@ -11,7 +11,10 @@ const BOXEN_OPTS = {
   borderStyle: 'round',
 }
 
+const DEFAULT_DIR = 'webpack-app'
+
 module.exports = {
   APP_TYPE,
   BOXEN_OPTS,
+  DEFAULT_DIR,
 }
