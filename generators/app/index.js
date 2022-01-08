@@ -5,8 +5,17 @@ const boxen = require('boxen')
 const beeper = require('beeper')
 const fs = require('fs-extra')
 const path = require('path')
+const ora = require('ora')
 
-const { APP_TYPE, BOXEN_OPTS, DEFAULT_DIR } = require('./constant')
+const {
+  APP_TYPE,
+  BOXEN_OPTS,
+  DEFAULT_DIR,
+  GIT_BASE,
+  WEBPACK_BASE,
+  ROLLUP_BASE,
+} = require('./constant')
+
 const pkg = require('./package')
 
 class WebRollGenerator extends Generator {
@@ -20,6 +29,7 @@ class WebRollGenerator extends Generator {
     this._printEnvInfo = this._printEnvInfo.bind(this)
     this._askForAppType = this._askForAppType.bind(this)
     this._askForDir = this._askForDir.bind(this)
+    this._askForOverwrite = this._askForOverwrite.bind(this)
   }
 
   _getDefaultDir() {
@@ -186,6 +196,26 @@ class WebRollGenerator extends Generator {
     if (!overwrite) {
       this.dirName = DEFAULT_DIR
     }
+  }
+
+  /** ------------------ retrieving user inputs --------------------- */
+
+  _walk() {}
+
+  _downloadTemplate() {}
+
+  /**
+   * @description Infuse template files and directories
+   */
+  writing() {
+    const repository =
+      this.type === APP_TYPE.WEBPACK ? WEBPACK_BASE : ROLLUP_BASE
+
+    this.log('⚙  Finish basic configuration.', chalk.green('✔'))
+    this.log()
+    this.log('📂 Generate project template and configuration...')
+
+    // continue with ORA code
   }
 }
 

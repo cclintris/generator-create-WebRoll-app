@@ -12,9 +12,15 @@ const BOXEN_OPTS = {
 }
 
 const DEFAULT_DIR = 'webpack-app'
+const GIT_BASE = 'https://github.com/cclintris/'
+const WEBPACK_BASE = ''
+const ROLLUP_BASE = 'create-WebRoll-app-template'
 
 module.exports = {
   APP_TYPE,
   BOXEN_OPTS,
   DEFAULT_DIR,
+  GIT_BASE,
+  WEBPACK_BASE,
+  ROLLUP_BASE,
 }
