@@ -202,7 +202,7 @@ class WebRollGenerator extends Generator {
     }
   }
 
-  /** ------------------ retrieving user inputs --------------------- */
+  /** ------------------ constructing CLI project --------------------- */
 
   /**
    *
