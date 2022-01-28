@@ -6,6 +6,7 @@ const beeper = require('beeper')
 const fs = require('fs-extra')
 const path = require('path')
 const ora = require('ora')
+const download = require('download-git-repo')
 
 const {
   APP_TYPE,
@@ -14,6 +15,7 @@ const {
   GIT_BASE,
   WEBPACK_BASE,
   ROLLUP_BASE,
+  ORA_SPINNER,
 } = require('./constant')
 
 const pkg = require('./package')
@@ -30,6 +32,8 @@ class WebRollGenerator extends Generator {
     this._askForAppType = this._askForAppType.bind(this)
     this._askForDir = this._askForDir.bind(this)
     this._askForOverwrite = this._askForOverwrite.bind(this)
+    this._walk = this._walk.bind(this)
+    this._downloadTemplate = this._downloadTemplate.bind(this)
   }
 
   _getDefaultDir() {
@@ -200,9 +204,35 @@ class WebRollGenerator extends Generator {
 
   /** ------------------ retrieving user inputs --------------------- */
 
-  _walk() {}
+  /**
+   *
+   * @param {string} filePath: [from]
+   * @param {string} templateRoot: [to]
+   * @description copy all content from [from] directory to [to] directory iteratedly
+   * @returns
+   */
 
-  _downloadTemplate() {}
+  _walk(filePath, templateRoot) {
+    if (fs.statSync(filePath).isDirectory()) {
+      fs.readdirSync(filePath).forEach((name) => {
+        this._walk(path.resolve(filePath, name), templateRoot)
+      })
+      return
+    }
+
+    const relativePath = path.relative(templateRoot, filePath)
+    const destination = this.destinationPath(this.dirName, relativePath)
+    this.fs.copyTpl(filePath, destination, {
+      dirName: this.dirName,
+    })
+  }
+
+  _downloadTemplate(repository) {
+    return new Promise((resolve, reject) => {
+      const dirPath = this.destinationPath(this.dirName, '.tmp')
+      download(repository, dirPath, (err) => (err ? reject(err) : resolve()))
+    })
+  }
 
   /**
    * @description Infuse template files and directories
@@ -215,7 +245,43 @@ class WebRollGenerator extends Generator {
     this.log()
     this.log('📂 Generate project template and configuration...')
 
-    // continue with ORA code
+    let spinner = ora({
+      text: `Download template from ${GIT_BASE}${repository}...`,
+      spinner: ORA_SPINNER,
+    }).start()
+
+    this._downloadTemplate(repository)
+      .then(() => {
+        spinner.stopAndPersist({
+          symbol: chalk.green('   ✔'),
+          text: `Finish downloading template from ${GIT_BASE}${repository}`,
+        })
+
+        spinner = ora({
+          text: 'Copy files into project folder.',
+          spinner: ORA_SPINNER,
+        }).start()
+
+        const templateRoot = this.destinationPath(this.dirName, '.tmp')
+        this._walk(templateRoot)
+        spinner.stopAndPersist({
+          symbol: chalk.green('   ✔'),
+          text: 'Finish copying files into project folder',
+        })
+
+        spinner = ora({
+          text: 'Clean tmp files and folders...',
+          spinner: ORA_SPINNER,
+        }).start()
+        fs.removeSync(templateRoot)
+        spinner.stopAndPersist({
+          symbol: chalk.green('   ✔'),
+          text: 'Finish cleaning tmp files and folders',
+        })
+      })
+      .catch((err) => {
+        this.env.error(err)
+      })
   }
 }
 
