@@ -283,6 +283,42 @@ class WebRollGenerator extends Generator {
         this.env.error(err)
       })
   }
+
+  /**
+   * @description install npm dependencies
+   */
+  install() {
+    this.log()
+    this.log(
+      '📂 Finish generating the project template and configuration.',
+      chalk.green('✔')
+    )
+    this.log()
+    this.log('📦 Install dependencies...')
+
+    this.npmInstall(
+      '',
+      {},
+      {
+        cwd: this.destinationPath(this.dirName),
+      }
+    )
+  }
+
+  end() {
+    const dir = chalk.green(this.dirName)
+    const info = `🎊 Create project successfully! Now you can enter ${dir} and start to code.`
+    this.log('📦 Finish installing dependencies.', chalk.green('✔'))
+    this.log()
+    this.log(
+      boxen(info, {
+        ...BOXEN_OPTS,
+        ...{
+          borderColor: 'white',
+        },
+      })
+    )
+  }
 }
 
 module.exports = WebRollGenerator
